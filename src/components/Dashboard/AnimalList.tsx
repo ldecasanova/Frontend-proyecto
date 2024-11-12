@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../../api/axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 interface Animal {
   id: number;
@@ -13,6 +13,7 @@ interface Animal {
 function AnimalList() {
   const [animals, setAnimals] = useState<Animal[]>([]);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const fetchAnimals = async () => {
@@ -24,7 +25,7 @@ function AnimalList() {
       }
     };
     fetchAnimals();
-  }, []);
+  }, [location]); // Se vuelve a ejecutar cuando cambia la ubicación
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
