@@ -3,11 +3,19 @@ import api from '../../api/axios';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../Common/Navbar';
 
+// Definición del Enumerado
+enum EstadoAnimal {
+  SANO = 'SANO',
+  EN_TRATAMIENTO = 'EN_TRATAMIENTO',
+  PERDIDO = 'PERDIDO',
+  RECUPERANDOSE = 'RECUPERANDOSE',
+}
+
 function AddAnimal() {
   const [nombre, setNombre] = useState('');
   const [especie, setEspecie] = useState('');
   const [edad, setEdad] = useState<number | ''>('');
-  const [estadoSalud, setEstadoSalud] = useState('');
+  const [estadoSalud, setEstadoSalud] = useState<EstadoAnimal | ''>('');
   const [adoptanteId, setAdoptanteId] = useState<number | ''>('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -70,13 +78,21 @@ function AddAnimal() {
             value={edad}
             onChange={(e) => setEdad(e.target.value ? Number(e.target.value) : '')}
           />
-          <input
-            type="text"
-            placeholder="Estado de Salud"
+          
+          {/* Campo Estado de Salud como Select */}
+          <select
             className="outline rounded p-2"
             value={estadoSalud}
-            onChange={(e) => setEstadoSalud(e.target.value)}
-          />
+            onChange={(e) => setEstadoSalud(e.target.value as EstadoAnimal)}
+          >
+            <option value="">Selecciona el Estado de Salud</option>
+            {Object.values(EstadoAnimal).map((estado) => (
+              <option key={estado} value={estado}>
+                {estado.replace('_', ' ')}
+              </option>
+            ))}
+          </select>
+
           <input
             type="number"
             placeholder="Adoptante ID (opcional)"
