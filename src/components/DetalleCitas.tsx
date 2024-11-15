@@ -15,7 +15,7 @@ interface Animal {
   especie: string;
   edad: number;
   estadoSalud: string;
-  adoptante?: Adoptante;
+  adoptanteId?: number;
 }
 
 interface Cita {
@@ -24,24 +24,38 @@ interface Cita {
   motivo: string;
   veterinario: string;
   estado: string;
-  animal?: Animal;
+  animalId: number;
 }
 
 function DetallesCita() {
   const { id } = useParams<{ id: string }>();
   const [cita, setCita] = useState<Cita | null>(null);
+  const [animal, setAnimal] = useState<Animal | null>(null);
+  const [adoptante, setAdoptante] = useState<Adoptante | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchCita = async () => {
       try {
-        const res = await axios.get(`http://localhost:8080/api/citas/${id}`);
-        console.log('Cita recibida:', res.data);
-        setCita(res.data);
+        const resCita = await axios.get(`http://localhost:8080/api/citas/${id}`);
+        const citaData: Cita = resCita.data;
+        setCita(citaData);
+
+        // Obtener información del animal
+        const resAnimal = await axios.get(`http://localhost:8080/api/animales/${citaData.animalId}`);
+        const animalData: Animal = resAnimal.data;
+        setAnimal(animalData);
+
+        // Obtener información del adoptante
+        if (animalData.adoptanteId) {
+          const resAdoptante = await axios.get(`http://localhost:8080/api/usuarios/${animalData.adoptanteId}`);
+          const adoptanteData: Adoptante = resAdoptante.data;
+          setAdoptante(adoptanteData);
+        }
       } catch (error) {
-        console.error('Error al obtener la cita:', error);
-        setError('Error al obtener la cita. Por favor, intenta nuevamente.');
+        console.error('Error al obtener los detalles:', error);
+        setError('Error al obtener los detalles. Por favor, intenta nuevamente.');
       } finally {
         setLoading(false);
       }
@@ -70,12 +84,12 @@ function DetallesCita() {
       <p><strong>Veterinario:</strong> {cita.veterinario}</p>
       <p><strong>Estado:</strong> {cita.estado}</p>
       <h2 className="text-xl mt-4">Información del Animal</h2>
-      <p><strong>Nombre:</strong> {cita.animal?.nombre || 'Sin nombre'}</p>
-      <p><strong>Especie:</strong> {cita.animal?.especie || 'Desconocida'}</p>
-      <p><strong>Edad:</strong> {cita.animal?.edad || 'Desconocida'}</p>
-      <p><strong>Estado de Salud:</strong> {cita.animal?.estadoSalud || 'Desconocido'}</p>
+      <p><strong>Nombre:</strong> {animal?.nombre || 'Sin nombre'}</p>
+      <p><strong>Especie:</strong> {animal?.especie || 'Desconocida'}</p>
+      <p><strong>Edad:</strong> {animal?.edad || 'Desconocida'}</p>
+      <p><strong>Estado de Salud:</strong> {animal?.estadoSalud || 'Desconocido'}</p>
       <h2 className="text-xl mt-4">Información del Adoptante</h2>
-      <p><strong>Nombre:</strong> {cita.animal?.adoptante?.nombre || 'Sin nombre'}</p>
+      <p><strong>Nombre:</strong> {adoptante?.nombre || 'Sin nombre'}</p>
       {/* Agrega más información del adoptante si es necesario */}
     </div>
   );
