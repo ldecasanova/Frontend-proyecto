@@ -1,7 +1,8 @@
 // src/components/DetallesCita.tsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import EditarCita from './EditarCitas';
 
 interface Adoptante {
   id: number;
@@ -29,11 +30,13 @@ interface Cita {
 
 function DetallesCita() {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [cita, setCita] = useState<Cita | null>(null);
   const [animal, setAnimal] = useState<Animal | null>(null);
   const [adoptante, setAdoptante] = useState<Adoptante | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchCita = async () => {
@@ -63,12 +66,39 @@ function DetallesCita() {
     fetchCita();
   }, [id]);
 
+  const handleEliminarCita = async () => {
+    if (!window.confirm('¿Estás seguro de que deseas eliminar esta cita?')) {
+      return;
+    }
+    try {
+      await axios.delete(`http://localhost:8080/api/citas/${id}`);
+      alert('Cita eliminada exitosamente.');
+      navigate('/dashboard'); // Redirigir al dashboard o a otra página
+    } catch (error) {
+      console.error('Error al eliminar la cita:', error);
+      setError('Error al eliminar la cita. Por favor, intenta nuevamente.');
+    }
+  };
+
+  const handleEditarCita = () => {
+    setIsEditing(true);
+  };
+
+  const handleActualizarCita = (citaActualizada: Cita) => {
+    setCita(citaActualizada);
+    setIsEditing(false);
+  };
+
+  const handleCancelarEdicion = () => {
+    setIsEditing(false);
+  };
+
   if (loading) {
     return <p>Cargando detalles de la cita...</p>;
   }
 
   if (error) {
-    return <p>{error}</p>;
+    return <p className="text-red-500">{error}</p>;
   }
 
   if (!cita) {
@@ -83,14 +113,39 @@ function DetallesCita() {
       <p><strong>Motivo:</strong> {cita.motivo}</p>
       <p><strong>Veterinario:</strong> {cita.veterinario}</p>
       <p><strong>Estado:</strong> {cita.estado}</p>
+
       <h2 className="text-xl mt-4">Información del Animal</h2>
       <p><strong>Nombre:</strong> {animal?.nombre || 'Sin nombre'}</p>
       <p><strong>Especie:</strong> {animal?.especie || 'Desconocida'}</p>
       <p><strong>Edad:</strong> {animal?.edad || 'Desconocida'}</p>
       <p><strong>Estado de Salud:</strong> {animal?.estadoSalud || 'Desconocido'}</p>
+
       <h2 className="text-xl mt-4">Información del Adoptante</h2>
       <p><strong>Nombre:</strong> {adoptante?.nombre || 'Sin nombre'}</p>
       {/* Agrega más información del adoptante si es necesario */}
+
+      <div className="mt-6 flex space-x-4">
+        <button
+          className="bg-yellow-500 text-white py-2 px-4 rounded"
+          onClick={handleEditarCita}
+        >
+          Editar Cita
+        </button>
+        <button
+          className="bg-red-500 text-white py-2 px-4 rounded"
+          onClick={handleEliminarCita}
+        >
+          Eliminar Cita
+        </button>
+      </div>
+
+      {isEditing && (
+        <EditarCita
+          cita={cita}
+          onActualizar={handleActualizarCita}
+          onCancelar={handleCancelarEdicion}
+        />
+      )}
     </div>
   );
 }

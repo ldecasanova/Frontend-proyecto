@@ -1,7 +1,8 @@
 // src/components/Dashboard.tsx
 import React, { useEffect, useState } from 'react';
-import api from '../api/axios';
+import axios from 'axios'; // Importación directa de axios
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify'; // Importamos toast para notificaciones
 
 interface Animal {
   id: number;
@@ -19,10 +20,11 @@ function Dashboard() {
   useEffect(() => {
     const fetchAnimales = async () => {
       try {
-        const res = await api.get('/animales');
+        const res = await axios.get<Animal[]>('http://localhost:8080/api/animales');
         setAnimales(res.data);
       } catch (error) {
         console.error('Error al obtener animales', error);
+        toast.error('Error al obtener animales.');
       }
     };
     fetchAnimales();

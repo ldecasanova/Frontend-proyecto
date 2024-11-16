@@ -11,41 +11,41 @@ import AdoptantesList from './components/AdoptantesList';
 import AgregarAdoptante from './components/AgregarAdoptante';
 import AgendarCita from './components/AgendarCitas';
 import CalendarioCitas from './components/CalendarioCitas';
-import DetallesCita from './components/DetalleCitas'; // Importamos DetallesCita
+import DetallesCita from './components/DetalleCitas';
 import VacunasAnimal from './components/VacunasAnimal';
-import NavBar from './components/NavBar';
+import Layout from './components/Layout'; // Importamos el Layout
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   return (
     <Router>
-      <Routes>
-        {/* Rutas sin NavBar */}
-        <Route path="/" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+      <div className="App">
+        <Routes>
+          {/* Rutas sin NavBar */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
-        {/* Rutas con NavBar */}
-        <Route
-          path="/*"
-          element={
-            <>
-              <NavBar />
-              <Routes>
-                <Route path="dashboard" element={<Dashboard />} />
-                <Route path="registrar-animal" element={<RegistrarAnimal />} />
-                <Route path="eliminar-animal" element={<DeleteAnimal />} />
-                <Route path="historial-animal/:id" element={<HistorialAnimal />} />
-                <Route path="adoptantes" element={<AdoptantesList />} />
-                <Route path="agregar-adoptante" element={<AgregarAdoptante />} />
-                <Route path="agendar-cita" element={<AgendarCita />} />
-                <Route path="agendar-cita/:id" element={<AgendarCita />} />
-                <Route path="calendario-citas" element={<CalendarioCitas />} />
-                <Route path="detalles-cita/:id" element={<DetallesCita />} /> {/* Nueva ruta */}
-                <Route path="vacunas-animal/:id" element={<VacunasAnimal />} />
-              </Routes>
-            </>
-          }
-        />
-      </Routes>
+          {/* Rutas con NavBar utilizando el Layout */}
+          <Route path="/" element={<Layout />}>
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="registrar-animal" element={<RegistrarAnimal />} />
+            <Route path="eliminar-animal" element={<DeleteAnimal />} />
+            <Route path="historial-animal/:id" element={<HistorialAnimal />} />
+            <Route path="adoptantes" element={<AdoptantesList />} />
+            <Route path="agregar-adoptante" element={<AgregarAdoptante />} />
+            <Route path="agendar-cita" element={<AgendarCita />} />
+            <Route path="agendar-cita/:id" element={<AgendarCita />} />
+            <Route path="calendario-citas" element={<CalendarioCitas />} />
+            <Route path="detalles-cita/:id" element={<DetallesCita />} />
+            <Route path="animales/:id/vacunas" element={<VacunasAnimal />} />
+          </Route>
+
+          {/* Ruta comodín para manejar 404 (opcional) */}
+          <Route path="*" element={<h2>404: Página no encontrada</h2>} />
+        </Routes>
+        <ToastContainer /> {/* Contenedor de notificaciones */}
+      </div>
     </Router>
   );
 }
