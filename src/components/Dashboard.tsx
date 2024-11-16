@@ -40,6 +40,7 @@ function Dashboard() {
               <th className="py-2">Edad</th>
               <th className="py-2">Estado de Salud</th>
               <th className="py-2">ID Adoptante</th>
+              <th className="py-2">Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -57,6 +58,20 @@ function Dashboard() {
                 <td className="py-2">{animal.edad}</td>
                 <td className="py-2">{animal.estadoSalud}</td>
                 <td className="py-2">{animal.adoptanteId}</td>
+                <td className="py-2 flex space-x-2">
+                  <button
+                    className="bg-blue-500 text-white py-1 px-3 rounded"
+                    onClick={() => navigate(`/animales/${animal.id}/vacunas`)}
+                  >
+                    Ver Vacunas
+                  </button>
+                  <button
+                    className="bg-green-500 text-white py-1 px-3 rounded"
+                    onClick={() => navigate(`/agendar-cita/${animal.id}`)}
+                  >
+                    Agendar Cita
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -79,12 +94,6 @@ function Dashboard() {
         </button>
         <button
           className="bg-blue-500 text-white py-2 px-4 rounded"
-          onClick={() => navigate('/agendar-cita')}
-        >
-          Agendar Cita
-        </button>
-        <button
-          className="bg-yellow-500 text-white py-2 px-4 rounded"
           onClick={() => navigate('/calendario-citas')}
         >
           Ver Calendario de Citas

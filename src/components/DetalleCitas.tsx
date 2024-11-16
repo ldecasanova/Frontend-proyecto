@@ -49,7 +49,7 @@ function DetallesCita() {
 
         // Obtener información del adoptante
         if (animalData.adoptanteId) {
-          const resAdoptante = await axios.get(`http://localhost:8080/api/usuarios/${animalData.adoptanteId}`);
+          const resAdoptante = await axios.get(`http://localhost:8080/api/adoptantes/${animalData.adoptanteId}`);
           const adoptanteData: Adoptante = resAdoptante.data;
           setAdoptante(adoptanteData);
         }

@@ -12,6 +12,7 @@ import AgregarAdoptante from './components/AgregarAdoptante';
 import AgendarCita from './components/AgendarCitas';
 import CalendarioCitas from './components/CalendarioCitas';
 import DetallesCita from './components/DetalleCitas'; // Importamos DetallesCita
+import VacunasAnimal from './components/VacunasAnimal';
 import NavBar from './components/NavBar';
 
 function App() {
@@ -39,7 +40,7 @@ function App() {
                 <Route path="agendar-cita/:id" element={<AgendarCita />} />
                 <Route path="calendario-citas" element={<CalendarioCitas />} />
                 <Route path="detalles-cita/:id" element={<DetallesCita />} /> {/* Nueva ruta */}
-                {/* Añade más rutas aquí */}
+                <Route path="vacunas-animal/:id" element={<VacunasAnimal />} />
               </Routes>
             </>
           }
