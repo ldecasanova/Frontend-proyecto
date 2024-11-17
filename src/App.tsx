@@ -23,7 +23,7 @@ function App() {
       <div className="App">
         <Routes>
           {/* Rutas sin NavBar */}
-          <Route path="/login" element={<Login />} />
+          <Route path="" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
           {/* Rutas con NavBar utilizando el Layout */}
