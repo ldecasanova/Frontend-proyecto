@@ -1,14 +1,15 @@
 // src/components/Dashboard.tsx
 import React, { useEffect, useState } from 'react';
-import axios from 'axios'; // Importación directa de axios
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify'; // Importamos toast para notificaciones
+import { toast } from 'react-toastify';
 
 interface Animal {
   id: number;
   nombre: string;
   especie: string;
   edad: number;
+  unidadEdad: string; // Nueva propiedad para la unidad de edad
   estadoSalud: string;
   adoptanteId: number;
 }
@@ -57,7 +58,8 @@ function Dashboard() {
                   </button>
                 </td>
                 <td className="py-2">{animal.especie}</td>
-                <td className="py-2">{animal.edad}</td>
+                {/* Mostrar la edad con la unidad */}
+                <td className="py-2">{animal.edad} {animal.unidadEdad}</td>
                 <td className="py-2">{animal.estadoSalud}</td>
                 <td className="py-2">{animal.adoptanteId}</td>
                 <td className="py-2 flex space-x-2">

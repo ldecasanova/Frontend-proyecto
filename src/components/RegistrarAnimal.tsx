@@ -5,18 +5,19 @@ import { useNavigate } from 'react-router-dom';
 function RegisterAnimal() {
   const [nombre, setNombre] = useState('');
   const [especie, setEspecie] = useState('');
-  const [edad, setEdad] = useState(0);
-  const [estadoSalud, setEstadoSalud] = useState(''); // Estado seleccionado
-  const [adoptanteId, setAdoptanteId] = useState(''); // ID seleccionado
-  const [adoptantes, setAdoptantes] = useState([]); // Lista de adoptantes
+  const [edad, setEdad] = useState<number | ''>('');
+  const [unidadEdad, setUnidadEdad] = useState<'meses' | 'años'>('años'); // Nuevo estado para la unidad de edad
+  const [estadoSalud, setEstadoSalud] = useState('');
+  const [adoptanteId, setAdoptanteId] = useState('');
+  const [adoptantes, setAdoptantes] = useState([]);
   const navigate = useNavigate();
 
   // Obtener adoptantes al cargar el componente
   useEffect(() => {
     const fetchAdoptantes = async () => {
       try {
-        const res = await api.get('/adoptantes'); // Endpoint para obtener adoptantes
-        setAdoptantes(res.data); // Guardar adoptantes en el estado
+        const res = await api.get('/adoptantes');
+        setAdoptantes(res.data);
       } catch (error) {
         console.error('Error al obtener adoptantes', error);
       }
@@ -24,55 +25,99 @@ function RegisterAnimal() {
     fetchAdoptantes();
   }, []);
 
-  const handleRegister = async () => {
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault(); // Prevenir recarga de la página
     try {
-      const res = await api.post('/animales', {
+      const animalData = {
         nombre,
         especie,
         edad,
+        unidadEdad, // Enviar la unidad de edad al backend
         estadoSalud,
-        adoptanteId, // Usar el ID del adoptante seleccionado
-      });
+        adoptanteId,
+      };
+
+      const res = await api.post('/animales', animalData);
       console.log('Animal registrado exitosamente', res.data);
-      navigate('/dashboard'); // Redirigir al dashboard después del registro
+      navigate('/dashboard'); // Redirigir al dashboard
     } catch (error) {
-      console.error('Error al registrar animal', error);
+      if (error instanceof Error) {
+        console.error('Error al registrar animal', (error as any).response?.data || error.message);
+      } else {
+        console.error('Error al registrar animal', error);
+      }
     }
   };
 
   return (
-    <div className="flex flex-col space-y-4 max-w-md mx-auto">
-      <h1 className="text-xl text-center">Registrar Animal</h1>
+    <form
+      onSubmit={handleRegister}
+      className="flex flex-col space-y-4 max-w-md mx-auto bg-white p-6 shadow-md rounded"
+    >
+      <h1 className="text-xl font-bold text-center mb-4">Registrar Nuevo Animal</h1>
 
       {/* Nombre del animal */}
       <input
         type="text"
         placeholder="Nombre del Animal"
-        className="outline rounded p-2"
+        className="outline rounded p-2 border border-gray-300"
+        value={nombre}
         onChange={(e) => setNombre(e.target.value)}
+        required
       />
 
       {/* Especie del animal */}
       <input
         type="text"
         placeholder="Especie"
-        className="outline rounded p-2"
+        className="outline rounded p-2 border border-gray-300"
+        value={especie}
         onChange={(e) => setEspecie(e.target.value)}
+        required
       />
 
       {/* Edad del animal */}
-      <input
-        type="number"
-        placeholder="Edad"
-        className="outline rounded p-2"
-        onChange={(e) => setEdad(Number(e.target.value))}
-      />
+      <div>
+        <input
+          type="number"
+          placeholder="Edad"
+          className="outline rounded p-2 w-full border border-gray-300"
+          value={edad}
+          onChange={(e) => setEdad(Number(e.target.value))}
+          required
+        />
+        <div className="flex items-center mt-2 space-x-4">
+          <label className="flex items-center">
+            <input
+              type="radio"
+              name="unidadEdad"
+              value="años"
+              checked={unidadEdad === 'años'}
+              onChange={() => setUnidadEdad('años')}
+              className="mr-2"
+            />
+            Años
+          </label>
+          <label className="flex items-center">
+            <input
+              type="radio"
+              name="unidadEdad"
+              value="meses"
+              checked={unidadEdad === 'meses'}
+              onChange={() => setUnidadEdad('meses')}
+              className="mr-2"
+            />
+            Meses
+          </label>
+        </div>
+      </div>
 
       {/* Estado de salud */}
       <select
-        className="outline rounded p-2"
+        className="outline rounded p-2 border border-gray-300"
         value={estadoSalud}
         onChange={(e) => setEstadoSalud(e.target.value)}
+        required
       >
         <option value="">Seleccione un estado de salud</option>
         <option value="SANO">Sano</option>
@@ -83,9 +128,10 @@ function RegisterAnimal() {
 
       {/* ID del adoptante */}
       <select
-        className="outline rounded p-2"
+        className="outline rounded p-2 border border-gray-300"
         value={adoptanteId}
         onChange={(e) => setAdoptanteId(e.target.value)}
+        required
       >
         <option value="">Seleccione un adoptante</option>
         {adoptantes.map((adoptante: any) => (
@@ -97,12 +143,12 @@ function RegisterAnimal() {
 
       {/* Botón para registrar */}
       <button
-        className="bg-blue-500 text-white py-2 rounded"
-        onClick={handleRegister}
+        type="submit"
+        className="bg-blue-500 text-white py-2 px-4 rounded shadow hover:bg-blue-600"
       >
         Registrar Animal
       </button>
-    </div>
+    </form>
   );
 }
 
