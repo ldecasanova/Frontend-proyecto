@@ -24,7 +24,7 @@ function CalendarioCitas() {
   useEffect(() => {
     const fetchCitas = async () => {
       try {
-        const res = await api.get('/citas');
+        const res = await api.get<Cita[]>('/citas');
         setCitas(res.data);
       } catch (error) {
         console.error('Error al obtener citas', error);

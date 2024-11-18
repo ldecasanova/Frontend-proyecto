@@ -21,7 +21,7 @@ function AgendarCita() {
   useEffect(() => {
     const fetchAnimales = async () => {
       try {
-        const res = await axios.get('http://localhost:8080/api/animales');
+        const res = await axios.get<Animal[]>('http://localhost:8080/api/animales');
         setAnimales(res.data);
         if (id) {
           setAnimalId(id); // Preseleccionamos el animal si se proporcionó el ID

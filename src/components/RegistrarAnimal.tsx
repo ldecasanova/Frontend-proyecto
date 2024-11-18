@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 function RegisterAnimal() {
   const [nombre, setNombre] = useState('');
@@ -9,17 +10,18 @@ function RegisterAnimal() {
   const [unidadEdad, setUnidadEdad] = useState<'meses' | 'años'>('años'); // Nuevo estado para la unidad de edad
   const [estadoSalud, setEstadoSalud] = useState('');
   const [adoptanteId, setAdoptanteId] = useState('');
-  const [adoptantes, setAdoptantes] = useState([]);
+  const [adoptantes, setAdoptantes] = useState<{ id: string; nombre: string }[]>([]);
   const navigate = useNavigate();
 
   // Obtener adoptantes al cargar el componente
   useEffect(() => {
     const fetchAdoptantes = async () => {
       try {
-        const res = await api.get('/adoptantes');
+        const res = await api.get<{ id: string; nombre: string }[]>('/adoptantes');
         setAdoptantes(res.data);
       } catch (error) {
         console.error('Error al obtener adoptantes', error);
+        toast.error('Error al obtener la lista de adoptantes. Intente nuevamente.');
       }
     };
     fetchAdoptantes();
@@ -38,13 +40,15 @@ function RegisterAnimal() {
       };
 
       const res = await api.post('/animales', animalData);
-      console.log('Animal registrado exitosamente', res.data);
+      toast.success('Animal registrado exitosamente.');
       navigate('/dashboard'); // Redirigir al dashboard
     } catch (error) {
       if (error instanceof Error) {
         console.error('Error al registrar animal', (error as any).response?.data || error.message);
+        toast.error('Error al registrar el animal. Intente nuevamente.');
       } else {
         console.error('Error al registrar animal', error);
+        toast.error('Ocurrió un error inesperado. Intente nuevamente.');
       }
     }
   };

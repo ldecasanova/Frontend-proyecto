@@ -42,18 +42,18 @@ function DetallesCita() {
     const fetchCita = async () => {
       try {
         const resCita = await axios.get(`http://localhost:8080/api/citas/${id}`);
-        const citaData: Cita = resCita.data;
+        const citaData: Cita = resCita.data as Cita;
         setCita(citaData);
 
         // Obtener información del animal
         const resAnimal = await axios.get(`http://localhost:8080/api/animales/${citaData.animalId}`);
-        const animalData: Animal = resAnimal.data;
+        const animalData: Animal = resAnimal.data as Animal;
         setAnimal(animalData);
 
         // Obtener información del adoptante
         if (animalData.adoptanteId) {
           const resAdoptante = await axios.get(`http://localhost:8080/api/adoptantes/${animalData.adoptanteId}`);
-          const adoptanteData: Adoptante = resAdoptante.data;
+          const adoptanteData: Adoptante = resAdoptante.data as Adoptante;
           setAdoptante(adoptanteData);
         }
       } catch (error) {
