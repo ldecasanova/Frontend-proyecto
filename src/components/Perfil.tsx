@@ -1,7 +1,9 @@
+// src/components/Perfil.tsx
 import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { toast } from 'react-toastify';
 import { FaLock, FaUser } from 'react-icons/fa';
+import { UsuarioResponseDto } from '../types/UsuarioResponseDto';
 
 function Perfil() {
   const [activeTab, setActiveTab] = useState('perfil'); // Tab activa
@@ -11,48 +13,94 @@ function Perfil() {
   const [passwordActual, setPasswordActual] = useState('');
   const [nuevaPassword, setNuevaPassword] = useState('');
 
-  // Cargar datos del perfil
+  // Obtener el ID del usuario desde localStorage (o cualquier otra fuente de autenticación)
+  const userId = localStorage.getItem('userId');
+
   useEffect(() => {
     const fetchPerfil = async () => {
       try {
-        const res = await api.get('/usuarios/perfil', {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        });
-        setNombre((res.data as { nombre: string }).nombre);
-        setEmail((res.data as { email: string }).email);
-        setDireccion((res.data as { direccion: string }).direccion);
-      } catch (error) {
-        if (!(error as any).response || (error as any).response.status >= 400) {
-          toast.error('Error al cargar los datos del perfil.');
+        if (!userId) {
+          toast.error('No se pudo encontrar el ID del usuario.');
+          return;
         }
+
+        const res = await api.get<UsuarioResponseDto>(`/usuarios/${userId}`);
+        const data = res.data;
+
+        setNombre(data.nombre);
+        setEmail(data.email);
+        setDireccion(data.direccion);
+
+        // Guardar datos en localStorage para usar en el cache
+        localStorage.setItem('nombre', data.nombre);
+        localStorage.setItem('email', data.email);
+        localStorage.setItem('direccion', data.direccion);
+      } catch (error: any) {
+        console.error('Error al cargar los datos del perfil:', error);
+        toast.error(error.response?.data?.message || 'Error al cargar los datos del perfil.');
       }
     };
 
-    fetchPerfil();
-  }, []);
+    // Intentar cargar desde el cache primero
+    const cachedNombre = localStorage.getItem('nombre');
+    const cachedEmail = localStorage.getItem('email');
+    const cachedDireccion = localStorage.getItem('direccion');
+
+    if (cachedNombre && cachedEmail && cachedDireccion) {
+      setNombre(cachedNombre);
+      setEmail(cachedEmail);
+      setDireccion(cachedDireccion);
+    } else {
+      fetchPerfil();
+    }
+  }, [userId]);
 
   // Actualizar perfil
   const handleActualizarPerfil = async () => {
     try {
-      await api.put('/usuarios/perfil', { nombre, email, direccion });
+      if (!userId) {
+        toast.error('No se pudo encontrar el ID del usuario.');
+        return;
+      }
+
+      await api.put(`/usuarios/perfil`, {
+        nombre,
+        email,
+        direccion,
+      });
+
+      // Actualizar el cache localStorage
+      localStorage.setItem('nombre', nombre);
+      localStorage.setItem('email', email);
+      localStorage.setItem('direccion', direccion);
+
       toast.success('Perfil actualizado correctamente.');
-    } catch (error) {
-      toast.error('Error al actualizar el perfil.');
+    } catch (error: any) {
+      console.error('Error al actualizar el perfil:', error);
+      toast.error(error.response?.data?.message || 'Error al actualizar el perfil.');
     }
   };
 
   // Cambiar contraseña
   const handleCambiarContrasena = async () => {
     try {
-      await api.put('/usuarios/perfil/cambiar-contrasena', {
+      if (!userId) {
+        toast.error('No se pudo encontrar el ID del usuario.');
+        return;
+      }
+
+      await api.put(`/usuarios/perfil/cambiar-contrasena`, {
         contrasenaActual: passwordActual,
         nuevaContrasena: nuevaPassword,
       });
+
       toast.success('Contraseña cambiada correctamente.');
-    } catch (error) {
-      toast.error('Error al cambiar la contraseña.');
+      // Limpiar los campos de contraseña
+      setPasswordActual('');
+      setNuevaPassword('');
+    } catch (error: any) {
+      console.error('Error al cambiar la contraseña:', error);
+      toast.error(error.response?.data?.message || 'Error al cambiar la contraseña.');
     }
   };
 
@@ -130,12 +178,14 @@ function Perfil() {
             type="password"
             placeholder="Contraseña Actual"
             className="outline rounded p-2 mb-2 w-full"
+            value={passwordActual}
             onChange={(e) => setPasswordActual(e.target.value)}
           />
           <input
             type="password"
             placeholder="Nueva Contraseña"
             className="outline rounded p-2 mb-2 w-full"
+            value={nuevaPassword}
             onChange={(e) => setNuevaPassword(e.target.value)}
           />
           <button

@@ -5,6 +5,10 @@ import { Link, useNavigate } from 'react-router-dom';
 function NavBar() {
   const navigate = useNavigate();
 
+  const handleLogoutClick = () => {
+    navigate('/logout'); // Navegar a la ruta de logout
+  };
+
   return (
     <nav className="bg-gray-800 text-white p-4 flex justify-between items-center">
       {/* Links de navegación */}
@@ -23,13 +27,21 @@ function NavBar() {
         </Link>
       </div>
 
-      {/* Botón de perfil */}
-      <button
-        onClick={() => navigate('/perfil')}
-        className="bg-blue-500 py-2 px-4 rounded hover:bg-blue-400"
-      >
-        Perfil
-      </button>
+      {/* Botón de perfil y logout */}
+      <div className="flex space-x-4">
+        <button
+          onClick={() => navigate('/perfil')}
+          className="bg-blue-500 py-2 px-4 rounded hover:bg-blue-400"
+        >
+          Perfil
+        </button>
+        <button
+          onClick={handleLogoutClick}
+          className="bg-red-500 py-2 px-4 rounded hover:bg-red-400"
+        >
+          Cerrar Sesión
+        </button>
+      </div>
     </nav>
   );
 }

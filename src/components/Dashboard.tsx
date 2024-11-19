@@ -1,4 +1,3 @@
-// src/components/Dashboard.tsx
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -158,6 +157,12 @@ function Dashboard() {
                           onClick={() => navigate(`/agendar-cita/${animal.id}`)}
                         >
                           Agendar Cita
+                        </button>
+                        <button
+                          className="bg-yellow-500 text-white py-1 px-3 rounded shadow hover:bg-yellow-600"
+                          onClick={() => navigate(`/editar-animal/${animal.id}`)}
+                        >
+                          Editar
                         </button>
                       </div>
                     </td>

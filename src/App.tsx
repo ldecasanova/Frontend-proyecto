@@ -13,10 +13,12 @@ import AgendarCita from './components/AgendarCitas';
 import CalendarioCitas from './components/CalendarioCitas';
 import DetallesCita from './components/DetalleCitas';
 import VacunasAnimal from './components/VacunasAnimal';
+import EditAnimal from './components/EditAnimal';
 import Layout from './components/Layout'; // Importamos el Layout
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Perfil from './components/Perfil';
+import Logout from './components/Logout'; // Importamos el componente Logout
 
 function App() {
   return (
@@ -24,7 +26,7 @@ function App() {
       <div className="App">
         <Routes>
           {/* Rutas sin NavBar */}
-          <Route path="" element={<Login />} />
+          <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
           {/* Rutas con NavBar utilizando el Layout */}
@@ -40,9 +42,13 @@ function App() {
             <Route path="calendario-citas" element={<CalendarioCitas />} />
             <Route path="detalles-cita/:id" element={<DetallesCita />} />
             <Route path="animales/:id/vacunas" element={<VacunasAnimal />} />
+            <Route path="editar-animal/:id" element={<EditAnimal />} />
             
             {/* Ruta de Perfil */}
             <Route path="perfil" element={<Perfil />} />
+            
+            {/* Ruta de Logout */}
+            <Route path="logout" element={<Logout />} />
           </Route>
 
           {/* Ruta comodín para manejar 404 (opcional) */}

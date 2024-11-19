@@ -1,29 +1,37 @@
-import { createContext, useState, useContext, ReactNode } from 'react';
+// src/contexts/AuthContext.tsx
+import React, { createContext, useState, ReactNode, useContext, useEffect } from 'react';
 
 interface AuthContextType {
-  token: string | null;
-  setToken: (token: string | null) => void;
+  userId: string | null;
+  setUserId: (userId: string | null) => void;
+  logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
-  token: null,
-  setToken: () => {},
+  userId: null,
+  setUserId: () => {},
+  logout: () => {},
 });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
+  const [userId, setUserId] = useState<string | null>(localStorage.getItem('userId'));
 
-  const saveToken = (userToken: string | null) => {
-    if (userToken) {
-      localStorage.setItem('token', userToken);
-    } else {
-      localStorage.removeItem('token');
-    }
-    setToken(userToken);
+  const logout = () => {
+    setUserId(null);
+    localStorage.removeItem('userId');
+    // Opcional: Hacer una solicitud al backend para cerrar sesión y eliminar la cookie
   };
 
+  useEffect(() => {
+    if (userId) {
+      localStorage.setItem('userId', userId);
+    } else {
+      localStorage.removeItem('userId');
+    }
+  }, [userId]);
+
   return (
-    <AuthContext.Provider value={{ token, setToken: saveToken }}>
+    <AuthContext.Provider value={{ userId, setUserId, logout }}>
       {children}
     </AuthContext.Provider>
   );
