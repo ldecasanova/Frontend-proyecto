@@ -16,6 +16,7 @@ import VacunasAnimal from './components/VacunasAnimal';
 import Layout from './components/Layout'; // Importamos el Layout
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Perfil from './components/Perfil';
 
 function App() {
   return (
@@ -39,6 +40,9 @@ function App() {
             <Route path="calendario-citas" element={<CalendarioCitas />} />
             <Route path="detalles-cita/:id" element={<DetallesCita />} />
             <Route path="animales/:id/vacunas" element={<VacunasAnimal />} />
+            
+            {/* Ruta de Perfil */}
+            <Route path="perfil" element={<Perfil />} />
           </Route>
 
           {/* Ruta comodín para manejar 404 (opcional) */}
