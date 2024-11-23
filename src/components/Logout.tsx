@@ -37,7 +37,7 @@ function Logout() {
         });
 
         // 4. Redirigir al usuario a la página de inicio de sesión
-        navigate('/login');
+        navigate('');
       } catch (error: any) {
         console.error('Error al cerrar sesión:', error);
         toast.error('Ocurrió un error al cerrar sesión.', {
@@ -45,7 +45,7 @@ function Logout() {
           autoClose: 3000,
         });
         // Redirigir al usuario de todas formas
-        navigate('/login');
+        navigate('');
       }
     };
 

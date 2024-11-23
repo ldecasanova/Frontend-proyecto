@@ -46,7 +46,7 @@ function Register() {
       });
 
       // Redirigir al login
-      navigate('/login');
+      navigate('');
     } catch (error: any) {
       if (error.response && error.response.status === 400) {
         toast.error('El correo ya está registrado.', {
