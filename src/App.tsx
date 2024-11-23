@@ -19,6 +19,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Perfil from './components/Perfil';
 import Logout from './components/Logout'; // Importamos el componente Logout
+import NotFound from './components/404'; // Importamos el componente NotFound
 
 function App() {
   return (
@@ -51,8 +52,8 @@ function App() {
             <Route path="logout" element={<Logout />} />
           </Route>
 
-          {/* Ruta comodín para manejar 404 (opcional) */}
-          <Route path="*" element={<h2>404: Página no encontrada</h2>} />
+          {/* Ruta comodín para manejar 404 */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
         <ToastContainer /> {/* Contenedor de notificaciones */}
       </div>
