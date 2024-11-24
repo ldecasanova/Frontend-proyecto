@@ -1,4 +1,3 @@
-// src/components/Perfil.tsx
 import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { toast } from 'react-toastify';
@@ -7,9 +6,12 @@ import { UsuarioResponseDto } from '../types/UsuarioResponseDto';
 
 function Perfil() {
   const [activeTab, setActiveTab] = useState('perfil'); // Tab activa
-  const [nombre, setNombre] = useState('');
-  const [email, setEmail] = useState('');
-  const [direccion, setDireccion] = useState('');
+  const [profile, setProfile] = useState<UsuarioResponseDto | null>(null); // Información actual
+  const [formValues, setFormValues] = useState({
+    nombre: '',
+    email: '',
+    direccion: '',
+  }); // Valores del formulario
   const [passwordActual, setPasswordActual] = useState('');
   const [nuevaPassword, setNuevaPassword] = useState('');
 
@@ -20,6 +22,7 @@ function Perfil() {
   // Obtener el ID del usuario desde localStorage (o cualquier otra fuente de autenticación)
   const userId = localStorage.getItem('userId');
 
+  // Cargar los datos del perfil al montar el componente
   useEffect(() => {
     const fetchPerfil = async () => {
       try {
@@ -35,10 +38,17 @@ function Perfil() {
         });
         const data = res.data;
 
-        setNombre(data.nombre);
-        setEmail(data.email);
-        setDireccion(data.direccion);
-        // Guardar datos en localStorage para usar en el caché
+        // Guardar datos actuales en el estado
+        setProfile(data);
+
+        // Inicializar el formulario con los valores actuales del perfil
+        setFormValues({
+          nombre: data.nombre,
+          email: data.email,
+          direccion: data.direccion,
+        });
+
+        // Guardar datos en localStorage para usar como caché
         localStorage.setItem('nombre', data.nombre);
         localStorage.setItem('email', data.email);
         localStorage.setItem('direccion', data.direccion);
@@ -48,21 +58,14 @@ function Perfil() {
       }
     };
 
-    // Intentar cargar desde el caché primero
-    const cachedNombre = localStorage.getItem('nombre');
-    const cachedEmail = localStorage.getItem('email');
-    const cachedDireccion = localStorage.getItem('direccion');
-    const cachedFotoPerfilUrl = localStorage.getItem('fotoPerfilUrl');
-
-    if (cachedNombre && cachedEmail && cachedDireccion) {
-      setNombre(cachedNombre);
-      setEmail(cachedEmail);
-      setDireccion(cachedDireccion);
-      setFotoPerfilUrl(cachedFotoPerfilUrl || '');
-    } else {
-      fetchPerfil();
-    }
+    fetchPerfil();
   }, [userId]);
+
+  // Manejar cambios en los campos del formulario
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormValues({ ...formValues, [name]: value });
+  };
 
   // Función para manejar el cambio de archivo
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -89,9 +92,9 @@ function Perfil() {
       }
 
       const formData = new FormData();
-      formData.append('nombre', nombre);
-      formData.append('email', email);
-      formData.append('direccion', direccion);
+      formData.append('nombre', formValues.nombre);
+      formData.append('email', formValues.email);
+      formData.append('direccion', formValues.direccion);
       if (fotoPerfil) {
         formData.append('fotoPerfil', fotoPerfil);
       }
@@ -103,11 +106,8 @@ function Perfil() {
         },
       });
 
-      // Actualizar el caché en localStorage
-      localStorage.setItem('nombre', nombre);
-      localStorage.setItem('email', email);
-      localStorage.setItem('direccion', direccion);
-      localStorage.setItem('fotoPerfilUrl', fotoPerfilUrl);
+      // Actualizar el estado del perfil después de actualizar
+      setProfile((prev) => prev ? { ...prev, ...formValues } : null);
 
       toast.success('Perfil actualizado correctamente.');
     } catch (error: any) {
@@ -146,6 +146,8 @@ function Perfil() {
       toast.error(error.response?.data?.message || 'Error al cambiar la contraseña.');
     }
   };
+
+  if (!profile) return <p>Cargando perfil...</p>;
 
   return (
     <div className="p-4 max-w-5xl mx-auto">
@@ -194,37 +196,40 @@ function Perfil() {
           <h2 className="text-xl mb-4">Información Actual</h2>
           <div className="bg-gray-100 p-4 rounded mb-4">
             <p>
-              <strong>Nombre:</strong> {nombre}
+              <strong>Nombre:</strong> {profile.nombre}
             </p>
             <p>
-              <strong>Email:</strong> {email}
+              <strong>Email:</strong> {profile.email}
             </p>
             <p>
-              <strong>Dirección:</strong> {direccion}
+              <strong>Dirección:</strong> {profile.direccion}
             </p>
           </div>
 
           <h2 className="text-xl mb-2">Actualizar Perfil</h2>
           <input
             type="text"
+            name="nombre"
             placeholder="Nuevo Nombre"
-            value={nombre}
+            value={formValues.nombre}
             className="outline rounded p-2 mb-2 w-full"
-            onChange={(e) => setNombre(e.target.value)}
+            onChange={handleInputChange}
           />
           <input
             type="email"
+            name="email"
             placeholder="Nuevo Email"
-            value={email}
+            value={formValues.email}
             className="outline rounded p-2 mb-2 w-full"
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={handleInputChange}
           />
           <input
             type="text"
+            name="direccion"
             placeholder="Nueva Dirección"
-            value={direccion}
+            value={formValues.direccion}
             className="outline rounded p-2 mb-2 w-full"
-            onChange={(e) => setDireccion(e.target.value)}
+            onChange={handleInputChange}
           />
           <button
             onClick={handleActualizarPerfil}
