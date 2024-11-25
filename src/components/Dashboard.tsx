@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { saveAs } from 'file-saver';
+import { FaFilePdf, FaFileExcel } from 'react-icons/fa';
 
 // Paleta de colores
 const colors = {
@@ -109,17 +110,19 @@ function Dashboard() {
       ) : (
         <>
           <div className="flex justify-between items-center mb-8">
-            <div>
+            <div className="flex space-x-4">
               <button
-                className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded shadow transition duration-300"
+                className="flex items-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded shadow transition duration-300"
                 onClick={exportToPDF}
               >
+                <FaFilePdf className="mr-2" />
                 Exportar a PDF
               </button>
               <button
-                className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 ml-4 rounded shadow transition duration-300"
+                className="flex items-center bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded shadow transition duration-300"
                 onClick={exportToExcel}
               >
+                <FaFileExcel className="mr-2" />
                 Exportar a Excel
               </button>
             </div>

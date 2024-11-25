@@ -17,7 +17,7 @@ function NavBar() {
           Animales
         </Link>
         <Link to="/adoptantes" className="hover:underline">
-          Adoptantes
+          Clientes
         </Link>
         <Link to="/calendario-citas" className="hover:underline">
           Citas

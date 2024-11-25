@@ -36,7 +36,6 @@ function VacunasAnimal() {
         const res = await axios.get<Vacuna[]>(`${API_BASE_URL}/vacunas/animal/${id}`);
         setVacunas(res.data);
       } catch (error) {
-        console.error('Error al obtener las vacunas:', error);
         toast.error('Error al obtener las vacunas.');
       } finally {
         setLoading(false);
@@ -51,7 +50,11 @@ function VacunasAnimal() {
   }, []);
 
   const handleAgregarVacuna = async () => {
-    if (!nombreSeleccionado || (nombreSeleccionado === 'Otra' && !nombrePersonalizado.trim()) || !fechaAplicacion) {
+    if (
+      !nombreSeleccionado ||
+      (nombreSeleccionado === 'Otra' && !nombrePersonalizado.trim()) ||
+      !fechaAplicacion
+    ) {
       setError('Por favor, complete todos los campos.');
       toast.error('Por favor, complete todos los campos.');
       return;
@@ -70,13 +73,12 @@ function VacunasAnimal() {
 
     setAgregando(true);
     try {
-      if (!id || isNaN(Number(id))) throw new Error('ID de animal inválido.');
       const nombreFinal = nombreSeleccionado === 'Otra' ? nombrePersonalizado.trim() : nombreSeleccionado;
 
       const nuevaVacuna = {
         nombre: nombreFinal,
         fechaAplicacion,
-        animalId: parseInt(id, 10),
+        animalId: parseInt(id!, 10),
       };
 
       const res = await axios.post<Vacuna>(`${API_BASE_URL}/vacunas`, nuevaVacuna);
@@ -84,10 +86,8 @@ function VacunasAnimal() {
       setNombreSeleccionado('Vacuna Común');
       setNombrePersonalizado('');
       setFechaAplicacion(new Date().toISOString().split('T')[0]);
-      setError(null);
       toast.success('Vacuna agregada exitosamente.');
-    } catch (error) {
-      console.error('Error al agregar la vacuna:', error);
+    } catch {
       toast.error('Error al agregar la vacuna.');
     } finally {
       setAgregando(false);
@@ -101,8 +101,7 @@ function VacunasAnimal() {
       await axios.delete(`${API_BASE_URL}/vacunas/${idVacuna}`);
       setVacunas(vacunas.filter((vacuna) => vacuna.id !== idVacuna));
       toast.success('Vacuna eliminada exitosamente.');
-    } catch (error) {
-      console.error('Error al eliminar la vacuna:', error);
+    } catch {
       toast.error('Error al eliminar la vacuna.');
     } finally {
       setEliminando(null);
@@ -134,24 +133,27 @@ function VacunasAnimal() {
   const opcionesNombre = ['Vacuna Común', 'Vacuna Triple Viral', 'Vacuna Anti-Rabia', 'Otra'];
 
   return (
-    <div className="p-6 max-w-4xl mx-auto bg-gray-100 rounded-lg shadow-md">
-      <h2 className="text-2xl font-semibold mb-6">Vacunas del Animal</h2>
+    <div className="p-8 max-w-4xl mx-auto bg-white shadow-md rounded-lg">
+      <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+        Vacunas del Animal
+      </h2>
+
       {loading ? (
-        <p>Cargando vacunas...</p>
+        <p className="text-center text-gray-600">Cargando vacunas...</p>
       ) : (
         <>
           <div className="mb-8">
-            <h3 className="text-xl font-semibold mb-4">Agregar Nueva Vacuna</h3>
+            <h3 className="text-xl font-semibold mb-4 text-blue-500">Agregar Nueva Vacuna</h3>
             <div className="flex flex-col space-y-4">
               <div>
-                <label htmlFor="nombreVacuna" className="block text-gray-700 mb-2">
+                <label htmlFor="nombreVacuna" className="block text-gray-700 font-semibold mb-2">
                   Nombre de la Vacuna
                 </label>
                 <select
                   id="nombreVacuna"
                   value={nombreSeleccionado}
                   onChange={(e) => setNombreSeleccionado(e.target.value)}
-                  className="border border-gray-300 rounded p-2 w-full"
+                  className="w-full p-3 border rounded focus:border-blue-500 focus:ring focus:ring-blue-200"
                 >
                   {opcionesNombre.map((opcion) => (
                     <option key={opcion} value={opcion}>
@@ -162,7 +164,7 @@ function VacunasAnimal() {
               </div>
               {nombreSeleccionado === 'Otra' && (
                 <div>
-                  <label htmlFor="nombrePersonalizado" className="block text-gray-700 mb-2">
+                  <label htmlFor="nombrePersonalizado" className="block text-gray-700 font-semibold mb-2">
                     Nombre Personalizado
                   </label>
                   <input
@@ -171,12 +173,12 @@ function VacunasAnimal() {
                     placeholder="Escribe el nombre de la vacuna"
                     value={nombrePersonalizado}
                     onChange={(e) => setNombrePersonalizado(e.target.value)}
-                    className="border border-gray-300 rounded p-2 w-full"
+                    className="w-full p-3 border rounded focus:border-blue-500 focus:ring focus:ring-blue-200"
                   />
                 </div>
               )}
               <div>
-                <label htmlFor="fechaAplicacion" className="block text-gray-700 mb-2">
+                <label htmlFor="fechaAplicacion" className="block text-gray-700 font-semibold mb-2">
                   Fecha de Aplicación
                 </label>
                 <input
@@ -184,7 +186,7 @@ function VacunasAnimal() {
                   id="fechaAplicacion"
                   value={fechaAplicacion}
                   onChange={(e) => setFechaAplicacion(e.target.value)}
-                  className="border border-gray-300 rounded p-2 w-full"
+                  className="w-full p-3 border rounded focus:border-blue-500 focus:ring focus:ring-blue-200"
                 />
               </div>
               <button
@@ -192,34 +194,36 @@ function VacunasAnimal() {
                 disabled={agregando}
                 className={`bg-blue-500 text-white py-2 px-4 rounded ${
                   agregando ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-600'
-                }`}
+                } focus:ring focus:ring-blue-300`}
               >
                 {agregando ? 'Agregando...' : 'Agregar Vacuna'}
               </button>
             </div>
           </div>
+
           <div className="flex justify-between mb-6">
             <button
-              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded shadow"
+              className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded shadow"
               onClick={exportToPDF}
             >
               Exportar a PDF
             </button>
             <button
-              className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded shadow"
+              className="bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded shadow"
               onClick={exportToExcel}
             >
               Exportar a Excel
             </button>
           </div>
+
           <div>
-            <h3 className="text-xl font-semibold mb-4">Lista de Vacunas</h3>
+            <h3 className="text-xl font-semibold mb-4 text-blue-500">Lista de Vacunas</h3>
             {vacunas.length === 0 ? (
-              <p>No hay vacunas registradas para este animal.</p>
+              <p className="text-center text-gray-600">No hay vacunas registradas para este animal.</p>
             ) : (
               <ul className="space-y-4">
                 {vacunas.map((vacuna) => (
-                  <li key={vacuna.id} className="border border-gray-200 p-4 rounded">
+                  <li key={vacuna.id} className="border border-gray-200 p-4 rounded-lg">
                     <div className="flex justify-between items-center">
                       <div>
                         <p>
@@ -233,10 +237,8 @@ function VacunasAnimal() {
                       <button
                         onClick={() => handleEliminarVacuna(vacuna.id)}
                         disabled={eliminando === vacuna.id}
-                        className={`bg-red-500 text-white py-1 px-3 rounded ${
-                          eliminando === vacuna.id
-                            ? 'opacity-50 cursor-not-allowed'
-                            : 'hover:bg-red-600'
+                        className={`bg-red-500 text-white py-2 px-3 rounded ${
+                          eliminando === vacuna.id ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-600'
                         }`}
                       >
                         {eliminando === vacuna.id ? 'Eliminando...' : 'Eliminar'}
