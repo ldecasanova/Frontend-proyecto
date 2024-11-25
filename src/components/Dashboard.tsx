@@ -13,6 +13,7 @@ interface Animal {
   edad: number;
   unidadEdad: string;
   estadoSalud: string;
+  genero: string; // Nuevo campo para el género
   adoptanteId: number;
 }
 
@@ -26,6 +27,7 @@ function Dashboard() {
       setLoading(true);
       try {
         const res = await axios.get<Animal[]>('http://localhost:8080/api/animales');
+        console.log('Datos obtenidos:', res.data); // Verifica si el campo genero está presente
         setAnimales(res.data);
       } catch (error) {
         console.error('Error al obtener animales', error);
@@ -41,11 +43,12 @@ function Dashboard() {
     const doc = new jsPDF();
     doc.text('Lista de Animales en Atención', 10, 10);
     autoTable(doc, {
-      head: [['Nombre', 'Especie', 'Edad', 'Estado de Salud', 'ID Adoptante']],
+      head: [['Nombre', 'Especie', 'Edad', 'Género', 'Estado de Salud', 'ID Adoptante']],
       body: animales.map((animal) => [
         animal.nombre,
         animal.especie,
         `${animal.edad} ${animal.unidadEdad}`,
+        animal.genero || 'No especificado', // Manejo de género vacío
         animal.estadoSalud,
         animal.adoptanteId || 'No asignado',
       ]),
@@ -55,9 +58,9 @@ function Dashboard() {
   };
 
   const exportToExcel = () => {
-    let content = 'Nombre,Especie,Edad,Estado de Salud,ID Adoptante\n';
+    let content = 'Nombre,Especie,Edad,Género,Estado de Salud,ID Adoptante\n';
     animales.forEach((animal) => {
-      content += `${animal.nombre},${animal.especie},${animal.edad} ${animal.unidadEdad},${animal.estadoSalud},${animal.adoptanteId || 'No asignado'}\n`;
+      content += `${animal.nombre},${animal.especie},${animal.edad} ${animal.unidadEdad},${animal.genero || 'No especificado'},${animal.estadoSalud},${animal.adoptanteId || 'No asignado'}\n`;
     });
     const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
     saveAs(blob, 'Animales_Atencion.csv');
@@ -122,6 +125,9 @@ function Dashboard() {
                     Edad
                   </th>
                   <th className="py-3 px-5 bg-gray-200 text-left text-sm font-semibold text-gray-700">
+                    Género
+                  </th>
+                  <th className="py-3 px-5 bg-gray-200 text-left text-sm font-semibold text-gray-700">
                     Estado de Salud
                   </th>
                   <th className="py-3 px-5 bg-gray-200 text-left text-sm font-semibold text-gray-700">
@@ -140,6 +146,7 @@ function Dashboard() {
                     <td className="py-4 px-5 text-sm text-gray-700">
                       {animal.edad} {animal.unidadEdad}
                     </td>
+                    <td className="py-4 px-5 text-sm text-gray-700">{animal.genero || 'No especificado'}</td>
                     <td className="py-4 px-5 text-sm text-gray-700">{animal.estadoSalud}</td>
                     <td className="py-4 px-5 text-sm text-gray-700">
                       {animal.adoptanteId || 'No asignado'}

@@ -4,52 +4,56 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 function RegisterAnimal() {
+  // Estados para los campos del formulario
   const [nombre, setNombre] = useState('');
   const [especie, setEspecie] = useState('');
-  const [edad, setEdad] = useState<number | ''>('');
-  const [unidadEdad, setUnidadEdad] = useState<'meses' | 'años'>('años'); // Nuevo estado para la unidad de edad
+  const [edad, setEdad] = useState<number | ''>(''); // Manejar números o cadenas vacías
+  const [unidadEdad, setUnidadEdad] = useState<'meses' | 'años'>('años');
   const [estadoSalud, setEstadoSalud] = useState('');
+  const [genero, setGenero] = useState<'MACHO' | 'HEMBRA' | ''>(''); // Género del animal
   const [adoptanteId, setAdoptanteId] = useState('');
   const [adoptantes, setAdoptantes] = useState<{ id: string; nombre: string }[]>([]);
+
   const navigate = useNavigate();
 
-  // Obtener adoptantes al cargar el componente
+  // Obtener la lista de adoptantes cuando el componente se monta
   useEffect(() => {
     const fetchAdoptantes = async () => {
       try {
         const res = await api.get<{ id: string; nombre: string }[]>('/adoptantes');
-        setAdoptantes(res.data);
+        setAdoptantes(res.data); // Guardar la lista de adoptantes en el estado
       } catch (error) {
         console.error('Error al obtener adoptantes', error);
         toast.error('Error al obtener la lista de adoptantes. Intente nuevamente.');
       }
     };
+
     fetchAdoptantes();
   }, []);
 
+  // Manejar el envío del formulario
   const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault(); // Prevenir recarga de la página
+    e.preventDefault(); // Evitar recarga de la página
+
     try {
+      // Datos que se enviarán al backend
       const animalData = {
         nombre,
         especie,
         edad,
-        unidadEdad, // Enviar la unidad de edad al backend
+        unidadEdad,
         estadoSalud,
+        genero, // Incluimos el género en la solicitud
         adoptanteId,
       };
 
-      const res = await api.post('/animales', animalData);
+      // Enviar los datos al backend
+      await api.post('/animales', animalData);
       toast.success('Animal registrado exitosamente.');
       navigate('/dashboard'); // Redirigir al dashboard
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error('Error al registrar animal', (error as any).response?.data || error.message);
-        toast.error('Error al registrar el animal. Intente nuevamente.');
-      } else {
-        console.error('Error al registrar animal', error);
-        toast.error('Ocurrió un error inesperado. Intente nuevamente.');
-      }
+    } catch (error: any) {
+      console.error('Error al registrar animal', error.response?.data || error.message);
+      toast.error('Error al registrar el animal. Intente nuevamente.');
     }
   };
 
@@ -116,6 +120,37 @@ function RegisterAnimal() {
         </div>
       </div>
 
+      {/* Género del animal */}
+      <div>
+        <label className="block font-bold mb-2">Género</label>
+        <div className="flex items-center space-x-4">
+          <label className="flex items-center">
+            <input
+              type="radio"
+              name="genero"
+              value="MACHO"
+              checked={genero === 'MACHO'}
+              onChange={() => setGenero('MACHO')}
+              className="mr-2"
+              required
+            />
+            Macho
+          </label>
+          <label className="flex items-center">
+            <input
+              type="radio"
+              name="genero"
+              value="HEMBRA"
+              checked={genero === 'HEMBRA'}
+              onChange={() => setGenero('HEMBRA')}
+              className="mr-2"
+              required
+            />
+            Hembra
+          </label>
+        </div>
+      </div>
+
       {/* Estado de salud */}
       <select
         className="outline rounded p-2 border border-gray-300"
@@ -138,7 +173,7 @@ function RegisterAnimal() {
         required
       >
         <option value="">Seleccione un adoptante</option>
-        {adoptantes.map((adoptante: any) => (
+        {adoptantes.map((adoptante) => (
           <option key={adoptante.id} value={adoptante.id}>
             {adoptante.nombre} - {adoptante.id}
           </option>
