@@ -1,5 +1,6 @@
 // src/types/UsuarioResponseDto.ts
 export interface UsuarioResponseDto {
+    fotoPerfilUrl(fotoPerfilUrl: any): unknown;
     id: number;
     nombre: string;
     email: string;

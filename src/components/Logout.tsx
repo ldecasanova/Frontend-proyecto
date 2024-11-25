@@ -37,7 +37,7 @@ function Logout() {
         });
 
         // 4. Redirigir al usuario a la página de inicio de sesión
-        navigate('');
+        navigate('/');
       } catch (error: any) {
         console.error('Error al cerrar sesión:', error);
         toast.error('Ocurrió un error al cerrar sesión.', {

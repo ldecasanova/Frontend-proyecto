@@ -21,7 +21,7 @@ function Layout() {
           </li>
           <li>
             <Link to="/adoptantes" className="text-white hover:underline">
-              Usuarios
+              Adoptante
             </Link>
           </li>
           <li>
