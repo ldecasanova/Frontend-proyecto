@@ -21,7 +21,6 @@ function VacunasAnimal() {
   const [nombreSeleccionado, setNombreSeleccionado] = useState('Vacuna Común');
   const [nombrePersonalizado, setNombrePersonalizado] = useState('');
   const [fechaAplicacion, setFechaAplicacion] = useState('');
-  const [setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [agregando, setAgregando] = useState<boolean>(false);
   const [eliminando, setEliminando] = useState<number | null>(null);
