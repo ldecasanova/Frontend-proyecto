@@ -129,6 +129,13 @@ function Perfil() {
       }
 
       // Enviar solicitud PUT para actualizar el perfil con userId como query parameter
+      const res = await api.put(`/usuarios/perfil?userId=${userId}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          // No enviar Authorization header
+        },
+      });
+      console.log('Perfil actualizado:', res.data);
 
       // Re-fetchar el perfil actualizado para asegurar la sincronización
       const updatedProfileRes = await api.get<UsuarioResponseDto>(`/usuarios/${userId}`);
