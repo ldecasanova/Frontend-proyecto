@@ -154,7 +154,7 @@ const DetallesCita = () => {
 
         {/* Información del Adoptante */}
         <div className="bg-gray-50 p-6 rounded-md md:col-span-2">
-          <h2 className="text-2xl font-semibold mb-4 text-gray-700">Información del Adoptante</h2>
+          <h2 className="text-2xl font-semibold mb-4 text-gray-700">Información del Cliente</h2>
           {adoptante ? (
             <>
               <p className="mb-2"><span className="font-medium">Nombre:</span> {adoptante.nombre}</p>

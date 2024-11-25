@@ -24,8 +24,8 @@ function RegisterAnimal() {
         const res = await api.get<{ id: string; nombre: string }[]>('/adoptantes');
         setAdoptantes(res.data); // Guardar la lista de adoptantes en el estado
       } catch (error) {
-        console.error('Error al obtener adoptantes', error);
-        toast.error('Error al obtener la lista de adoptantes. Intente nuevamente.');
+        console.error('Error al obtener Clientes', error);
+        toast.error('Error al obtener la lista de Clientes. Intente nuevamente.');
       }
     };
 
@@ -193,7 +193,7 @@ function RegisterAnimal() {
       {/* ID del adoptante */}
       <div className="flex flex-col">
         <label htmlFor="adoptante" className="text-gray-700 font-semibold mb-2">
-          Adoptante
+          Cliente
         </label>
         <select
           id="adoptante"
@@ -202,7 +202,7 @@ function RegisterAnimal() {
           onChange={(e) => setAdoptanteId(e.target.value)}
           required
         >
-          <option value="">Seleccione un adoptante</option>
+          <option value="">Seleccione un Cliente</option>
           {adoptantes.map((adoptante) => (
             <option key={adoptante.id} value={adoptante.id}>
               {adoptante.nombre} - {adoptante.id}

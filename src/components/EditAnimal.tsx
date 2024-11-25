@@ -47,8 +47,8 @@ function EditAnimal() {
         const res = await axios.get<{ id: string; nombre: string }[]>(`${API_BASE_URL}/adoptantes`);
         setAdoptantes(res.data);
       } catch (error) {
-        console.error('Error al cargar adoptantes:', error);
-        toast.error('Error al cargar adoptantes.');
+        console.error('Error al cargar Clientes:', error);
+        toast.error('Error al cargar Clientes.');
       }
     };
 

@@ -53,7 +53,7 @@ function Dashboard() {
     const doc = new jsPDF();
     doc.text('Lista de Animales en Atención', 10, 10);
     autoTable(doc, {
-      head: [['Nombre', 'Especie', 'Edad', 'Género', 'Estado de Salud', 'ID Adoptante']],
+      head: [['Nombre', 'Especie', 'Edad', 'Género', 'Estado de Salud', 'ID Cliente']],
       body: animales.map((animal) => [
         animal.nombre,
         animal.especie,
@@ -68,7 +68,7 @@ function Dashboard() {
   };
 
   const exportToExcel = () => {
-    let content = 'Nombre,Especie,Edad,Género,Estado de Salud,ID Adoptante\n';
+    let content = 'Nombre,Especie,Edad,Género,Estado de Salud,ID Cliente\n';
     animales.forEach((animal) => {
       content += `${animal.nombre},${animal.especie},${animal.edad} ${animal.unidadEdad},${animal.genero || 'No especificado'},${animal.estadoSalud},${animal.adoptanteId || 'No asignado'}\n`;
     });
@@ -140,7 +140,7 @@ function Dashboard() {
                   <th className="py-4 px-6 text-left font-semibold">Edad</th>
                   <th className="py-4 px-6 text-left font-semibold">Género</th>
                   <th className="py-4 px-6 text-left font-semibold">Estado de Salud</th>
-                  <th className="py-4 px-6 text-left font-semibold">ID Adoptante</th>
+                  <th className="py-4 px-6 text-left font-semibold">ID Cliente</th>
                   <th className="py-4 px-6 text-center font-semibold">Acciones</th>
                 </tr>
               </thead>

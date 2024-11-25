@@ -1,4 +1,4 @@
-// src/components/Layout.tsx
+// src/components/Layout.tsx 
 import React from 'react';
 import { Outlet, Link, useNavigate } from 'react-router-dom';
 
@@ -21,17 +21,17 @@ function Layout() {
           </li>
           <li>
             <Link to="/adoptantes" className="text-white hover:underline">
-              Adoptante
-            </Link>
-          </li>
-          <li>
-            <Link to="/registrar-animal" className="text-white hover:underline">
-              Registrar Animal
+              Clientes
             </Link>
           </li>
           <li>
             <Link to="/agendar-cita" className="text-white hover:underline">
               Agendar Cita
+            </Link>
+          </li>
+          <li>
+            <Link to="/calendario-citas" className="text-white hover:underline">
+              Calendario
             </Link>
           </li>
         </ul>

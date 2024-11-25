@@ -99,7 +99,7 @@ function AdoptantesList() {
   return (
     <div className="p-8 max-w-7xl mx-auto bg-white rounded-lg shadow-lg">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-4xl font-bold text-gray-800">Lista de Adoptantes</h1>
+        <h1 className="text-4xl font-bold text-gray-800">Lista de Clientes</h1>
         <div className="flex space-x-4">
           <button
             className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded shadow transition duration-300"
@@ -117,7 +117,7 @@ function AdoptantesList() {
             className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded shadow transition duration-300"
             onClick={() => navigate('/agregar-adoptante')}
           >
-            Agregar Adoptante
+            Agregar Cliente
           </button>
         </div>
       </div>
@@ -191,7 +191,7 @@ function AdoptantesList() {
         </div>
       ) : (
         <div className="flex justify-center items-center h-64">
-          <p className="text-gray-600 text-lg">No hay adoptantes registrados.</p>
+          <p className="text-gray-600 text-lg">No hay Clientes registrados.</p>
         </div>
       )}
     </div>
