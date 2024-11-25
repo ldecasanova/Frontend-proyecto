@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { FaPaw } from 'react-icons/fa'; // Ícono de patita
 
 function RegisterAnimal() {
   // Estados para los campos del formulario
@@ -60,42 +61,60 @@ function RegisterAnimal() {
   return (
     <form
       onSubmit={handleRegister}
-      className="flex flex-col space-y-4 max-w-md mx-auto bg-white p-6 shadow-md rounded"
+      className="flex flex-col space-y-6 max-w-lg mx-auto bg-white p-8 shadow-lg rounded-lg border border-gray-200"
     >
-      <h1 className="text-xl font-bold text-center mb-4">Registrar Nuevo Animal</h1>
+      <div className="flex items-center justify-center space-x-3 mb-6">
+        <FaPaw className="text-green-600 text-2xl" />
+        <h1 className="text-3xl font-bold text-gray-800">Registrar Nuevo Animal</h1>
+      </div>
 
       {/* Nombre del animal */}
-      <input
-        type="text"
-        placeholder="Nombre del Animal"
-        className="outline rounded p-2 border border-gray-300"
-        value={nombre}
-        onChange={(e) => setNombre(e.target.value)}
-        required
-      />
-
-      {/* Especie del animal */}
-      <input
-        type="text"
-        placeholder="Especie"
-        className="outline rounded p-2 border border-gray-300"
-        value={especie}
-        onChange={(e) => setEspecie(e.target.value)}
-        required
-      />
-
-      {/* Edad del animal */}
-      <div>
+      <div className="flex flex-col">
+        <label htmlFor="nombre" className="text-gray-700 font-semibold mb-2">
+          Nombre del Animal
+        </label>
         <input
-          type="number"
-          placeholder="Edad"
-          className="outline rounded p-2 w-full border border-gray-300"
-          value={edad}
-          onChange={(e) => setEdad(Number(e.target.value))}
+          id="nombre"
+          type="text"
+          placeholder="Nombre del Animal"
+          className="outline-none rounded p-3 border border-gray-300 focus:ring-2 focus:ring-green-500"
+          value={nombre}
+          onChange={(e) => setNombre(e.target.value)}
           required
         />
+      </div>
+
+      {/* Especie del animal */}
+      <div className="flex flex-col">
+        <label htmlFor="especie" className="text-gray-700 font-semibold mb-2">
+          Especie
+        </label>
+        <input
+          id="especie"
+          type="text"
+          placeholder="Especie"
+          className="outline-none rounded p-3 border border-gray-300 focus:ring-2 focus:ring-green-500"
+          value={especie}
+          onChange={(e) => setEspecie(e.target.value)}
+          required
+        />
+      </div>
+
+      {/* Edad del animal */}
+      <div className="flex flex-col">
+        <label className="text-gray-700 font-semibold mb-2">Edad</label>
+        <div className="flex items-center">
+          <input
+            type="number"
+            placeholder="Edad"
+            className="outline-none rounded p-3 border border-gray-300 w-full focus:ring-2 focus:ring-green-500"
+            value={edad}
+            onChange={(e) => setEdad(Number(e.target.value))}
+            required
+          />
+        </div>
         <div className="flex items-center mt-2 space-x-4">
-          <label className="flex items-center">
+          <label className="flex items-center text-gray-600">
             <input
               type="radio"
               name="unidadEdad"
@@ -106,7 +125,7 @@ function RegisterAnimal() {
             />
             Años
           </label>
-          <label className="flex items-center">
+          <label className="flex items-center text-gray-600">
             <input
               type="radio"
               name="unidadEdad"
@@ -121,10 +140,10 @@ function RegisterAnimal() {
       </div>
 
       {/* Género del animal */}
-      <div>
-        <label className="block font-bold mb-2">Género</label>
-        <div className="flex items-center space-x-4">
-          <label className="flex items-center">
+      <div className="flex flex-col">
+        <label className="text-gray-700 font-semibold mb-2">Género</label>
+        <div className="flex items-center space-x-6">
+          <label className="flex items-center text-gray-600">
             <input
               type="radio"
               name="genero"
@@ -136,7 +155,7 @@ function RegisterAnimal() {
             />
             Macho
           </label>
-          <label className="flex items-center">
+          <label className="flex items-center text-gray-600">
             <input
               type="radio"
               name="genero"
@@ -152,38 +171,50 @@ function RegisterAnimal() {
       </div>
 
       {/* Estado de salud */}
-      <select
-        className="outline rounded p-2 border border-gray-300"
-        value={estadoSalud}
-        onChange={(e) => setEstadoSalud(e.target.value)}
-        required
-      >
-        <option value="">Seleccione un estado de salud</option>
-        <option value="SANO">Sano</option>
-        <option value="EN_TRATAMIENTO">En Tratamiento</option>
-        <option value="PERDIDO">Perdido</option>
-        <option value="RECUPERANDOSE">Recuperándose</option>
-      </select>
+      <div className="flex flex-col">
+        <label htmlFor="estadoSalud" className="text-gray-700 font-semibold mb-2">
+          Estado de Salud
+        </label>
+        <select
+          id="estadoSalud"
+          className="outline-none rounded p-3 border border-gray-300 focus:ring-2 focus:ring-green-500"
+          value={estadoSalud}
+          onChange={(e) => setEstadoSalud(e.target.value)}
+          required
+        >
+          <option value="">Seleccione un estado de salud</option>
+          <option value="SANO">Sano</option>
+          <option value="EN_TRATAMIENTO">En Tratamiento</option>
+          <option value="PERDIDO">Perdido</option>
+          <option value="RECUPERANDOSE">Recuperándose</option>
+        </select>
+      </div>
 
       {/* ID del adoptante */}
-      <select
-        className="outline rounded p-2 border border-gray-300"
-        value={adoptanteId}
-        onChange={(e) => setAdoptanteId(e.target.value)}
-        required
-      >
-        <option value="">Seleccione un adoptante</option>
-        {adoptantes.map((adoptante) => (
-          <option key={adoptante.id} value={adoptante.id}>
-            {adoptante.nombre} - {adoptante.id}
-          </option>
-        ))}
-      </select>
+      <div className="flex flex-col">
+        <label htmlFor="adoptante" className="text-gray-700 font-semibold mb-2">
+          Adoptante
+        </label>
+        <select
+          id="adoptante"
+          className="outline-none rounded p-3 border border-gray-300 focus:ring-2 focus:ring-green-500"
+          value={adoptanteId}
+          onChange={(e) => setAdoptanteId(e.target.value)}
+          required
+        >
+          <option value="">Seleccione un adoptante</option>
+          {adoptantes.map((adoptante) => (
+            <option key={adoptante.id} value={adoptante.id}>
+              {adoptante.nombre} - {adoptante.id}
+            </option>
+          ))}
+        </select>
+      </div>
 
       {/* Botón para registrar */}
       <button
         type="submit"
-        className="bg-blue-500 text-white py-2 px-4 rounded shadow hover:bg-blue-600"
+        className="bg-green-500 hover:bg-green-600 text-white py-3 px-4 rounded shadow-lg transition duration-300"
       >
         Registrar Animal
       </button>

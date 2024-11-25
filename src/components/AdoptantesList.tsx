@@ -1,4 +1,3 @@
-// src/components/AdoptantesList.tsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -6,6 +5,17 @@ import { toast } from 'react-toastify';
 import { saveAs } from 'file-saver';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+
+// Paleta de colores
+const colors = {
+  primary: '#2563EB', // Azul
+  secondary: '#16A34A', // Verde
+  danger: '#DC2626', // Rojo
+  warning: '#F59E0B', // Amarillo
+  neutral: '#F3F4F6', // Gris claro
+  textDark: '#374151', // Gris oscuro
+  textLight: '#FFFFFF', // Blanco
+};
 
 interface Adoptante {
   id: number;
@@ -72,6 +82,7 @@ function AdoptantesList() {
       startY: 20,
     });
     doc.save('Lista_Adoptantes.pdf');
+    toast.success('Archivo PDF exportado exitosamente.');
   };
 
   const exportToExcel = () => {
@@ -82,115 +93,107 @@ function AdoptantesList() {
 
     const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
     saveAs(blob, 'Lista_Adoptantes.csv');
+    toast.success('Archivo Excel exportado exitosamente.');
   };
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-800">Lista de Adoptantes</h1>
-          <div className="flex space-x-4">
-            <button
-              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded shadow"
-              onClick={exportToPDF}
-            >
-              Exportar a PDF
-            </button>
-            <button
-              className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded shadow"
-              onClick={exportToExcel}
-            >
-              Exportar a Excel
-            </button>
-            <button
-              className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded shadow"
-              onClick={() => navigate('/agregar-adoptante')}
-            >
-              Agregar Adoptante
-            </button>
-          </div>
+    <div className="p-8 max-w-7xl mx-auto bg-white rounded-lg shadow-lg">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-4xl font-bold text-gray-800">Lista de Adoptantes</h1>
+        <div className="flex space-x-4">
+          <button
+            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded shadow transition duration-300"
+            onClick={exportToPDF}
+          >
+            Exportar a PDF
+          </button>
+          <button
+            className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded shadow transition duration-300"
+            onClick={exportToExcel}
+          >
+            Exportar a Excel
+          </button>
+          <button
+            className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded shadow transition duration-300"
+            onClick={() => navigate('/agregar-adoptante')}
+          >
+            Agregar Adoptante
+          </button>
         </div>
-
-        {loading ? (
-          <div className="flex justify-center items-center h-64">
-            <svg
-              className="animate-spin h-10 w-10 text-green-500"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              ></circle>
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8v8H4z"
-              ></path>
-            </svg>
-          </div>
-        ) : adoptantes.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="min-w-full bg-white rounded-lg overflow-hidden shadow">
-              <thead>
-                <tr>
-                  <th className="py-3 px-5 bg-gray-200 text-left text-sm font-semibold text-gray-700">
-                    ID
-                  </th>
-                  <th className="py-3 px-5 bg-gray-200 text-left text-sm font-semibold text-gray-700">
-                    Nombre
-                  </th>
-                  <th className="py-3 px-5 bg-gray-200 text-left text-sm font-semibold text-gray-700">
-                    Email
-                  </th>
-                  <th className="py-3 px-5 bg-gray-200 text-left text-sm font-semibold text-gray-700">
-                    Dirección
-                  </th>
-                  <th className="py-3 px-5 bg-gray-200 text-left text-sm font-semibold text-gray-700">
-                    Teléfono
-                  </th>
-                  <th className="py-3 px-5 bg-gray-200 text-center text-sm font-semibold text-gray-700">
-                    Acciones
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {adoptantes.map((adoptante) => (
-                  <tr key={adoptante.id} className="border-b hover:bg-gray-50">
-                    <td className="py-4 px-5 text-sm text-gray-700">{adoptante.id}</td>
-                    <td className="py-4 px-5 text-sm text-gray-700">{adoptante.nombre}</td>
-                    <td className="py-4 px-5 text-sm text-gray-700">{adoptante.email}</td>
-                    <td className="py-4 px-5 text-sm text-gray-700">{adoptante.direccion}</td>
-                    <td className="py-4 px-5 text-sm text-gray-700">{adoptante.telefono}</td>
-                    <td className="py-4 px-5 text-center">
-                      <button
-                        className={`${
-                          eliminandoId === adoptante.id
-                            ? 'bg-red-300 cursor-not-allowed'
-                            : 'bg-red-500 hover:bg-red-600'
-                        } text-white font-semibold py-2 px-4 rounded shadow`}
-                        onClick={() => handleEliminar(adoptante.id)}
-                        disabled={eliminandoId === adoptante.id}
-                      >
-                        {eliminandoId === adoptante.id ? 'Eliminando...' : 'Eliminar'}
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <div className="flex justify-center items-center h-64">
-            <p className="text-gray-600 text-lg">No hay adoptantes registrados.</p>
-          </div>
-        )}
       </div>
+
+      {loading ? (
+        <div className="flex justify-center items-center h-64">
+          <svg
+            className="animate-spin h-10 w-10 text-green-500"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            ></circle>
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8v8H4z"
+            ></path>
+          </svg>
+        </div>
+      ) : adoptantes.length > 0 ? (
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-gray-100 rounded-lg shadow-lg">
+            <thead className="bg-gray-200 text-gray-700">
+              <tr>
+                <th className="py-4 px-6 text-left font-semibold">ID</th>
+                <th className="py-4 px-6 text-left font-semibold">Nombre</th>
+                <th className="py-4 px-6 text-left font-semibold">Email</th>
+                <th className="py-4 px-6 text-left font-semibold">Dirección</th>
+                <th className="py-4 px-6 text-left font-semibold">Teléfono</th>
+                <th className="py-4 px-6 text-center font-semibold">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {adoptantes.map((adoptante, index) => (
+                <tr
+                  key={adoptante.id}
+                  className={`border-b ${
+                    index % 2 === 0 ? 'bg-white' : 'bg-gray-50'
+                  } hover:bg-gray-100`}
+                >
+                  <td className="py-4 px-6">{adoptante.id}</td>
+                  <td className="py-4 px-6">{adoptante.nombre}</td>
+                  <td className="py-4 px-6">{adoptante.email}</td>
+                  <td className="py-4 px-6">{adoptante.direccion}</td>
+                  <td className="py-4 px-6">{adoptante.telefono}</td>
+                  <td className="py-4 px-6 text-center">
+                    <button
+                      className={`${
+                        eliminandoId === adoptante.id
+                          ? 'bg-red-300 cursor-not-allowed'
+                          : 'bg-red-500 hover:bg-red-600'
+                      } text-white font-semibold py-2 px-4 rounded shadow transition duration-300`}
+                      onClick={() => handleEliminar(adoptante.id)}
+                      disabled={eliminandoId === adoptante.id}
+                    >
+                      {eliminandoId === adoptante.id ? 'Eliminando...' : 'Eliminar'}
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div className="flex justify-center items-center h-64">
+          <p className="text-gray-600 text-lg">No hay adoptantes registrados.</p>
+        </div>
+      )}
     </div>
   );
 }

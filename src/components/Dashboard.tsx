@@ -6,6 +6,17 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { saveAs } from 'file-saver';
 
+// Paleta de colores
+const colors = {
+  primary: '#2563EB', // Azul
+  secondary: '#16A34A', // Verde
+  danger: '#DC2626', // Rojo
+  warning: '#F59E0B', // Amarillo
+  neutral: '#F3F4F6', // Gris claro
+  textDark: '#374151', // Gris oscuro
+  textLight: '#FFFFFF', // Blanco
+};
+
 interface Animal {
   id: number;
   nombre: string;
@@ -13,7 +24,7 @@ interface Animal {
   edad: number;
   unidadEdad: string;
   estadoSalud: string;
-  genero: string; // Nuevo campo para el género
+  genero?: string; // Campo para el género
   adoptanteId: number;
 }
 
@@ -27,7 +38,6 @@ function Dashboard() {
       setLoading(true);
       try {
         const res = await axios.get<Animal[]>('http://localhost:8080/api/animales');
-        console.log('Datos obtenidos:', res.data); // Verifica si el campo genero está presente
         setAnimales(res.data);
       } catch (error) {
         console.error('Error al obtener animales', error);
@@ -48,7 +58,7 @@ function Dashboard() {
         animal.nombre,
         animal.especie,
         `${animal.edad} ${animal.unidadEdad}`,
-        animal.genero || 'No especificado', // Manejo de género vacío
+        animal.genero || 'No especificado',
         animal.estadoSalud,
         animal.adoptanteId || 'No asignado',
       ]),
@@ -68,8 +78,10 @@ function Dashboard() {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto bg-gray-100 rounded-lg shadow-md">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">Animales en Atención</h1>
+    <div className="p-8 max-w-7xl mx-auto bg-white rounded-lg shadow-lg">
+      <h1 className="text-4xl font-bold text-gray-800 mb-8 text-center">
+        Animales en Atención
+      </h1>
 
       {loading ? (
         <div className="flex justify-center items-center h-64">
@@ -96,77 +108,72 @@ function Dashboard() {
         </div>
       ) : (
         <>
-          <div className="flex justify-end space-x-4 mb-6">
+          <div className="flex justify-between items-center mb-8">
+            <div>
+              <button
+                className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded shadow transition duration-300"
+                onClick={exportToPDF}
+              >
+                Exportar a PDF
+              </button>
+              <button
+                className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 ml-4 rounded shadow transition duration-300"
+                onClick={exportToExcel}
+              >
+                Exportar a Excel
+              </button>
+            </div>
             <button
-              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded shadow"
-              onClick={exportToPDF}
+              className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded shadow transition duration-300"
+              onClick={() => navigate('/registrar-animal')}
             >
-              Exportar a PDF
-            </button>
-            <button
-              className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded shadow"
-              onClick={exportToExcel}
-            >
-              Exportar a Excel
+              Registrar Nuevo Animal
             </button>
           </div>
 
           {animales.length > 0 ? (
-            <table className="min-w-full bg-white rounded-lg overflow-hidden shadow">
-              <thead>
+            <table className="min-w-full bg-gray-100 rounded-lg overflow-hidden shadow-lg">
+              <thead className="bg-gray-200 text-gray-700">
                 <tr>
-                  <th className="py-3 px-5 bg-gray-200 text-left text-sm font-semibold text-gray-700">
-                    Nombre
-                  </th>
-                  <th className="py-3 px-5 bg-gray-200 text-left text-sm font-semibold text-gray-700">
-                    Especie
-                  </th>
-                  <th className="py-3 px-5 bg-gray-200 text-left text-sm font-semibold text-gray-700">
-                    Edad
-                  </th>
-                  <th className="py-3 px-5 bg-gray-200 text-left text-sm font-semibold text-gray-700">
-                    Género
-                  </th>
-                  <th className="py-3 px-5 bg-gray-200 text-left text-sm font-semibold text-gray-700">
-                    Estado de Salud
-                  </th>
-                  <th className="py-3 px-5 bg-gray-200 text-left text-sm font-semibold text-gray-700">
-                    ID Adoptante
-                  </th>
-                  <th className="py-3 px-5 bg-gray-200 text-center text-sm font-semibold text-gray-700">
-                    Acciones
-                  </th>
+                  <th className="py-4 px-6 text-left font-semibold">Nombre</th>
+                  <th className="py-4 px-6 text-left font-semibold">Especie</th>
+                  <th className="py-4 px-6 text-left font-semibold">Edad</th>
+                  <th className="py-4 px-6 text-left font-semibold">Género</th>
+                  <th className="py-4 px-6 text-left font-semibold">Estado de Salud</th>
+                  <th className="py-4 px-6 text-left font-semibold">ID Adoptante</th>
+                  <th className="py-4 px-6 text-center font-semibold">Acciones</th>
                 </tr>
               </thead>
               <tbody>
-                {animales.map((animal) => (
-                  <tr key={animal.id} className="border-b hover:bg-gray-50">
-                    <td className="py-4 px-5 text-sm text-gray-700">{animal.nombre}</td>
-                    <td className="py-4 px-5 text-sm text-gray-700">{animal.especie}</td>
-                    <td className="py-4 px-5 text-sm text-gray-700">
-                      {animal.edad} {animal.unidadEdad}
-                    </td>
-                    <td className="py-4 px-5 text-sm text-gray-700">{animal.genero || 'No especificado'}</td>
-                    <td className="py-4 px-5 text-sm text-gray-700">{animal.estadoSalud}</td>
-                    <td className="py-4 px-5 text-sm text-gray-700">
-                      {animal.adoptanteId || 'No asignado'}
-                    </td>
-                    <td className="py-4 px-5 text-center">
-                      <div className="flex space-x-2 justify-center">
+                {animales.map((animal, index) => (
+                  <tr
+                    key={animal.id}
+                    className={`border-b ${
+                      index % 2 === 0 ? 'bg-white' : 'bg-gray-50'
+                    } hover:bg-gray-100`}
+                  >
+                    <td className="py-4 px-6">{animal.nombre}</td>
+                    <td className="py-4 px-6">{animal.especie}</td>
+                    <td className="py-4 px-6">{`${animal.edad} ${animal.unidadEdad}`}</td>
+                    <td className="py-4 px-6">{animal.genero || 'No especificado'}</td>
+                    <td className="py-4 px-6">{animal.estadoSalud}</td>
+                    <td className="py-4 px-6">{animal.adoptanteId || 'No asignado'}</td>
+                    <td className="py-4 px-6 text-center">
+                      <div className="flex justify-center items-center space-x-2">
                         <button
-                          className="bg-blue-500 text-white py-1 px-3 rounded shadow hover:bg-blue-600"
+                          className="bg-blue-500 hover:bg-blue-600 text-white py-1 px-4 rounded shadow transition duration-300"
                           onClick={() => navigate(`/animales/${animal.id}/vacunas`)}
                         >
-                          Ver Vacunas
+                          Vacunas
                         </button>
                         <button
-                          className="bg-green-500 text-white py-1 px-3 rounded shadow hover:bg-green-600"
+                          className="bg-green-500 hover:bg-green-600 text-white py-1 px-4 rounded shadow transition duration-300"
                           onClick={() => navigate(`/agendar-cita/${animal.id}`)}
                         >
-                          Agendar Cita
+                          Cita
                         </button>
                         <button
-                          className="bg-yellow-500 text-white py-1 px-3 rounded shadow hover:bg-yellow-600"
+                          className="bg-yellow-500 hover:bg-yellow-600 text-white py-1 px-4 rounded shadow transition duration-300"
                           onClick={() => navigate(`/editar-animal/${animal.id}`)}
                         >
                           Editar
@@ -178,31 +185,12 @@ function Dashboard() {
               </tbody>
             </table>
           ) : (
-            <p className="text-gray-600 text-lg text-center">No hay animales registrados.</p>
+            <p className="text-gray-600 text-center text-lg mt-4">
+              No hay animales registrados.
+            </p>
           )}
         </>
       )}
-
-      <div className="mt-8 flex space-x-4">
-        <button
-          className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded shadow"
-          onClick={() => navigate('/registrar-animal')}
-        >
-          Registrar Nuevo Animal
-        </button>
-        <button
-          className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded shadow"
-          onClick={() => navigate('/eliminar-animal')}
-        >
-          Eliminar Animales
-        </button>
-        <button
-          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded shadow"
-          onClick={() => navigate('/calendario-citas')}
-        >
-          Ver Calendario de Citas
-        </button>
-      </div>
     </div>
   );
 }
