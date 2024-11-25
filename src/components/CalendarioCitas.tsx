@@ -1,5 +1,5 @@
 // src/components/CalendarioCitas.tsx
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Calendar, momentLocalizer, Event as CalendarEvent } from 'react-big-calendar';
 import moment from 'moment';

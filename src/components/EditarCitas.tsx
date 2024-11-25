@@ -1,5 +1,5 @@
 // src/components/EditarCita.tsx
-import React, { useState } from 'react';
+import { useState } from 'react';
 import api from '../api/axios'; // Asegúrate de tener una instancia configurada de Axios
 import { toast } from 'react-toastify'; // Para notificaciones elegantes
 import 'react-toastify/dist/ReactToastify.css';

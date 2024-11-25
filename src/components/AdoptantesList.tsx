@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -6,16 +6,6 @@ import { saveAs } from 'file-saver';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
-// Paleta de colores
-const colors = {
-  primary: '#2563EB', // Azul
-  secondary: '#16A34A', // Verde
-  danger: '#DC2626', // Rojo
-  warning: '#F59E0B', // Amarillo
-  neutral: '#F3F4F6', // Gris claro
-  textDark: '#374151', // Gris oscuro
-  textLight: '#FFFFFF', // Blanco
-};
 
 interface Adoptante {
   id: number;

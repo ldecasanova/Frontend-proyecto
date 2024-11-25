@@ -1,5 +1,4 @@
 // src/components/Layout.tsx
-import React from 'react';
 import { Outlet, Link, useNavigate } from 'react-router-dom';
 import { FaPaw, FaCalendarAlt, FaUsers, FaSignOutAlt, FaUserCircle } from 'react-icons/fa';
 

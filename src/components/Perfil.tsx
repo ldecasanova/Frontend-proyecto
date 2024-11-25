@@ -16,7 +16,6 @@ function Perfil() {
   const [passwordActual, setPasswordActual] = useState('');
   const [nuevaPassword, setNuevaPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [fotoPerfil, setFotoPerfil] = useState<File | null>(null);
   const [fotoPerfilUrl, setFotoPerfilUrl] = useState<string>('');
   const userId = localStorage.getItem('userId');
 
@@ -72,8 +71,6 @@ function Perfil() {
         toast.error('El tamaño de la imagen excede el límite permitido de 10MB.');
         return;
       }
-
-      setFotoPerfil(file);
 
       // Previsualizar la imagen
       const reader = new FileReader();

@@ -1,6 +1,6 @@
 // src/components/DetallesCita.tsx
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import EditarCita from './EditarCitas';
@@ -40,7 +40,6 @@ const DetallesCita = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [isDeleting, setIsDeleting] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchCita = async () => {

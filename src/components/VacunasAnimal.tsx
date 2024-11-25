@@ -1,5 +1,5 @@
 // src/components/VacunasAnimal.tsx
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -21,7 +21,7 @@ function VacunasAnimal() {
   const [nombreSeleccionado, setNombreSeleccionado] = useState('Vacuna Común');
   const [nombrePersonalizado, setNombrePersonalizado] = useState('');
   const [fechaAplicacion, setFechaAplicacion] = useState('');
-  const [error, setError] = useState<string | null>(null);
+  const [setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [agregando, setAgregando] = useState<boolean>(false);
   const [eliminando, setEliminando] = useState<number | null>(null);
@@ -55,7 +55,7 @@ function VacunasAnimal() {
       (nombreSeleccionado === 'Otra' && !nombrePersonalizado.trim()) ||
       !fechaAplicacion
     ) {
-      setError('Por favor, complete todos los campos.');
+
       toast.error('Por favor, complete todos los campos.');
       return;
     }
@@ -66,7 +66,7 @@ function VacunasAnimal() {
     fechaSeleccionada.setHours(0, 0, 0, 0);
 
     if (fechaSeleccionada > ahora) {
-      setError('La fecha de aplicación no puede ser una fecha futura.');
+
       toast.error('La fecha de aplicación no puede ser una fecha futura.');
       return;
     }
